@@ -1,0 +1,5320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GreenTask | Gestão de Jardinagem</title>
+
+    <style>
+
+        /* =========================================================
+           GREEN TASK
+           SISTEMA DE GESTÃO DE JARDINAGEM
+           ========================================================= */
+
+        :root {
+            --verde-escuro: #07583f;
+            --verde: #08734d;
+            --verde-claro: #16a56d;
+            --verde-brilho: #29b879;
+
+            --verde-fundo: #e8f8f0;
+            --fundo: #f5f8f6;
+
+            --branco: #ffffff;
+            --texto: #20352d;
+            --texto-suave: #74847d;
+
+            --borda: #e3ebe7;
+
+            --vermelho: #d94c4c;
+            --amarelo: #c47c19;
+            --azul: #4779b3;
+
+            --sombra: 0 12px 30px rgba(20, 72, 52, 0.08);
+        }
+
+
+        /* =========================================================
+           RESET
+           ========================================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background: var(--fundo);
+            color: var(--texto);
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+        }
+
+
+        /* =========================================================
+           ESTRUTURA
+           ========================================================= */
+
+        .app {
+            min-height: 100vh;
+            display: flex;
+        }
+
+
+        /* =========================================================
+           SIDEBAR
+           ========================================================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+
+            width: 250px;
+
+            padding: 22px 15px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #08734d 0%,
+                    #07583f 100%
+                );
+
+            color: white;
+
+            z-index: 100;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+
+            padding: 2px 10px 25px;
+        }
+
+        .logo-icon {
+            font-size: 30px;
+        }
+
+        .logo h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .logo small {
+            display: block;
+            margin-top: 3px;
+
+            color: #bcebd5;
+
+            font-size: 10px;
+        }
+
+        .menu-title {
+            padding: 0 12px 10px;
+
+            color: #a9ddc5;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            letter-spacing: 1.4px;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .menu button {
+            width: 100%;
+
+            background: transparent;
+
+            color: #d9f3e7;
+
+            text-align: left;
+
+            padding: 12px;
+
+            border-radius: 12px;
+
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-weight: 650;
+
+            transition: 0.2s;
+        }
+
+        .menu button:hover,
+        .menu button.active {
+            background: rgba(255,255,255,0.14);
+            color: white;
+        }
+
+        .menu-icon {
+            width: 22px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+
+            padding: 12px;
+
+            color: #a9ddc5;
+
+            font-size: 11px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================================================
+           CONTEÚDO
+           ========================================================= */
+
+        .main {
+            width: 100%;
+            margin-left: 250px;
+
+            padding: 24px;
+
+            min-width: 0;
+        }
+
+
+        /* =========================================================
+           TOPO
+           ========================================================= */
+
+        .topbar {
+            height: 52px;
+
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            gap: 13px;
+
+            margin-bottom: 10px;
+        }
+
+        .top-icon {
+            width: 40px;
+            height: 40px;
+
+            border-radius: 12px;
+
+            background: white;
+
+            box-shadow: var(--sombra);
+
+            font-size: 17px;
+        }
+
+        .perfil-mini {
+            display: flex;
+            align-items: center;
+
+            gap: 9px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+
+            border-radius: 50%;
+
+            background: #d9f2e6;
+
+            color: var(--verde);
+
+            display: grid;
+            place-items: center;
+
+            font-weight: 850;
+        }
+
+        .perfil-mini strong {
+            display: block;
+            font-size: 13px;
+        }
+
+        .perfil-mini small {
+            color: var(--texto-suave);
+            font-size: 10px;
+        }
+
+
+        /* =========================================================
+           TELAS
+           ========================================================= */
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        .page-title {
+            margin: 0 0 5px;
+
+            font-size: 26px;
+
+            letter-spacing: -0.7px;
+        }
+
+        .page-subtitle {
+            margin: 0 0 19px;
+
+            color: var(--texto-suave);
+
+            font-size: 13px;
+        }
+
+
+        /* =========================================================
+           HERO
+           ========================================================= */
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+
+            background:
+                linear-gradient(
+                    120deg,
+                    var(--verde-claro),
+                    var(--verde-brilho)
+                );
+
+            color: white;
+
+            border-radius: 18px;
+
+            padding: 25px 28px;
+
+            margin-bottom: 18px;
+
+            box-shadow: var(--sombra);
+        }
+
+        .hero::after {
+            content: "🌿";
+
+            position: absolute;
+
+            right: 25px;
+            bottom: -22px;
+
+            font-size: 105px;
+
+            opacity: 0.12;
+        }
+
+        .hero h2 {
+            margin: 0 0 5px;
+
+            font-size: 21px;
+        }
+
+        .hero p {
+            margin: 0;
+
+            color: #dff7eb;
+
+            font-size: 12px;
+        }
+
+        .date-pill {
+            display: inline-block;
+
+            margin-top: 15px;
+
+            padding: 8px 12px;
+
+            background: rgba(255,255,255,0.14);
+
+            border-radius: 9px;
+
+            font-size: 11px;
+        }
+
+
+        /* =========================================================
+           CARDS
+           ========================================================= */
+
+        .card {
+            background: white;
+
+            border: 1px solid var(--borda);
+
+            border-radius: 15px;
+
+            box-shadow: var(--sombra);
+        }
+
+
+        /* =========================================================
+           ESTATÍSTICAS
+           ========================================================= */
+
+        .stats {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 14px;
+
+            margin-bottom: 18px;
+        }
+
+        .stat-card {
+            padding: 17px;
+
+            display: flex;
+
+            gap: 12px;
+        }
+
+        .stat-icon {
+            width: 38px;
+            height: 38px;
+
+            border-radius: 11px;
+
+            background: var(--verde-fundo);
+
+            display: grid;
+            place-items: center;
+        }
+
+        .stat-card strong {
+            display: block;
+
+            font-size: 24px;
+
+            margin: 5px 0 2px;
+        }
+
+        .stat-card span {
+            color: var(--texto-suave);
+
+            font-size: 11px;
+        }
+
+
+        /* =========================================================
+           GRID
+           ========================================================= */
+
+        .dashboard-grid {
+            display: grid;
+
+            grid-template-columns:
+                1.25fr 0.75fr;
+
+            gap: 18px;
+        }
+
+        .section-card {
+            padding: 18px;
+        }
+
+        .section-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin-bottom: 13px;
+        }
+
+        .section-header h3 {
+            margin: 0;
+
+            font-size: 14px;
+        }
+
+        .link-button {
+            background: none;
+
+            color: var(--verde);
+
+            font-size: 11px;
+
+            font-weight: 750;
+        }
+
+
+        /* =========================================================
+           LINHAS
+           ========================================================= */
+
+        .list-row {
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            padding: 12px 0;
+
+            border-bottom: 1px solid #edf1ef;
+        }
+
+        .list-row:last-child {
+            border-bottom: none;
+        }
+
+        .grow {
+            flex: 1;
+
+            min-width: 0;
+        }
+
+        .grow strong {
+            display: block;
+
+            font-size: 12px;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+        .grow small {
+            display: block;
+
+            color: var(--texto-suave);
+
+            font-size: 10px;
+
+            margin-top: 3px;
+        }
+
+        .area-icon {
+            width: 34px;
+            height: 34px;
+
+            border-radius: 10px;
+
+            background: var(--verde-fundo);
+
+            display: grid;
+            place-items: center;
+        }
+
+
+        /* =========================================================
+           BADGES
+           ========================================================= */
+
+        .badge {
+            display: inline-block;
+
+            padding: 5px 8px;
+
+            border-radius: 20px;
+
+            font-size: 9px;
+
+            white-space: nowrap;
+        }
+
+        .badge-pendente {
+            background: #fff4e5;
+            color: var(--amarelo);
+        }
+
+        .badge-andamento {
+            background: #eaf2fb;
+            color: var(--azul);
+        }
+
+        .badge-concluida {
+            background: #e5f7ee;
+            color: #25815b;
+        }
+
+        .badge-ativo {
+            background: #e5f7ee;
+            color: #25815b;
+        }
+
+        .badge-inativo {
+            background: #f1f1f1;
+            color: #777;
+        }
+
+
+        /* =========================================================
+           TOOLBAR
+           ========================================================= */
+
+        .toolbar {
+            display: flex;
+
+            gap: 9px;
+
+            flex-wrap: wrap;
+
+            margin-bottom: 17px;
+        }
+
+        .btn-primary {
+            background: var(--verde);
+
+            color: white;
+
+            padding: 10px 14px;
+
+            border-radius: 10px;
+
+            font-size: 12px;
+
+            font-weight: 750;
+        }
+
+        .btn-primary:hover {
+            background: var(--verde-escuro);
+        }
+
+        .btn-secondary {
+            background: white;
+
+            color: var(--texto);
+
+            border: 1px solid var(--borda);
+
+            padding: 10px 14px;
+
+            border-radius: 10px;
+
+            font-size: 12px;
+
+            font-weight: 650;
+        }
+
+        .search {
+            padding: 10px 12px;
+
+            border: 1px solid var(--borda);
+
+            border-radius: 10px;
+
+            outline: none;
+
+            min-width: 210px;
+        }
+
+        .search:focus,
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--verde-claro);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(22,165,109,0.1);
+        }
+
+
+        /* =========================================================
+           TABELAS
+           ========================================================= */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+
+            min-width: 680px;
+
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            text-align: left;
+
+            padding: 13px 11px;
+
+            border-bottom: 1px solid var(--borda);
+
+            font-size: 11px;
+        }
+
+        th {
+            color: var(--texto-suave);
+
+            font-size: 10px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.6px;
+        }
+
+
+        /* =========================================================
+           BOTÕES DE AÇÃO
+           ========================================================= */
+
+        .btn-edit,
+        .btn-delete {
+            padding: 7px 9px;
+
+            border-radius: 8px;
+
+            font-size: 10px;
+
+            font-weight: 750;
+
+            margin-right: 4px;
+        }
+
+        .btn-edit {
+            background: #eef7f2;
+
+            color: var(--verde);
+        }
+
+        .btn-delete {
+            background: #fff0f0;
+
+            color: var(--vermelho);
+        }
+
+
+        /* =========================================================
+           ÁREAS
+           ========================================================= */
+
+        .area-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fill, minmax(240px, 1fr));
+
+            gap: 15px;
+        }
+
+        .area-card {
+            padding: 18px;
+
+            border: 1px solid var(--borda);
+
+            border-radius: 15px;
+
+            background: white;
+
+            box-shadow: var(--sombra);
+
+            transition: 0.2s;
+        }
+
+        .area-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .area-card-top {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-start;
+        }
+
+        .area-big-icon {
+            width: 48px;
+            height: 48px;
+
+            border-radius: 14px;
+
+            background: var(--verde-fundo);
+
+            display: grid;
+            place-items: center;
+
+            font-size: 25px;
+        }
+
+        .area-card h3 {
+            margin: 13px 0 4px;
+
+            font-size: 15px;
+        }
+
+        .area-card p {
+            margin: 0 0 14px;
+
+            color: var(--texto-suave);
+
+            font-size: 11px;
+        }
+
+        .area-actions {
+            display: flex;
+
+            gap: 7px;
+        }
+
+
+        /* =========================================================
+           EMPTY
+           ========================================================= */
+
+        .empty {
+            text-align: center;
+
+            color: var(--texto-suave);
+
+            padding: 30px;
+
+            font-size: 12px;
+        }
+
+
+        /* =========================================================
+           RELATÓRIOS
+           ========================================================= */
+
+        .kpis {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 14px;
+        }
+
+        .kpi {
+            padding: 18px;
+        }
+
+        .kpi strong {
+            font-size: 26px;
+        }
+
+        .kpi span {
+            display: block;
+
+            color: var(--texto-suave);
+
+            font-size: 11px;
+
+            margin-top: 5px;
+        }
+
+
+        /* =========================================================
+           FORMULÁRIOS
+           ========================================================= */
+
+        .form-grid {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 13px;
+        }
+
+        .field {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 6px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        .field label {
+            font-size: 11px;
+
+            font-weight: 750;
+
+            color: #4e6259;
+        }
+
+        .field input,
+        .field select,
+        .field textarea {
+            border: 1px solid var(--borda);
+
+            border-radius: 10px;
+
+            padding: 10px 11px;
+
+            outline: none;
+
+            color: var(--texto);
+
+            background: white;
+        }
+
+        .field textarea {
+            min-height: 85px;
+
+            resize: vertical;
+        }
+
+
+        /* =========================================================
+           MODAL
+           ========================================================= */
+
+        .modal-background {
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(10,30,22,0.45);
+
+            display: none;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 18px;
+
+            z-index: 200;
+        }
+
+        .modal-background.show {
+            display: flex;
+        }
+
+        .modal {
+            width: min(620px, 100%);
+
+            background: white;
+
+            border-radius: 18px;
+
+            padding: 21px;
+
+            box-shadow:
+                0 25px 70px
+                rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 18px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+
+            font-size: 17px;
+        }
+
+        .close {
+            width: 32px;
+            height: 32px;
+
+            border-radius: 9px;
+
+            background: #f1f4f2;
+        }
+
+        .modal-actions {
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 9px;
+
+            margin-top: 18px;
+        }
+
+
+        /* =========================================================
+           PERFIL
+           ========================================================= */
+
+        .profile-container {
+            display: grid;
+
+            grid-template-columns:
+                120px 1fr;
+
+            gap: 25px;
+        }
+
+        .big-avatar {
+            width: 100px;
+            height: 100px;
+
+            border-radius: 28px;
+
+            background: var(--verde-fundo);
+
+            display: grid;
+            place-items: center;
+
+            font-size: 34px;
+
+            color: var(--verde);
+
+            font-weight: 850;
+        }
+
+
+        /* =========================================================
+           TOAST
+           ========================================================= */
+
+        .toast {
+            position: fixed;
+
+            right: 20px;
+            bottom: 20px;
+
+            background: #173d30;
+
+            color: white;
+
+            padding: 12px 15px;
+
+            border-radius: 11px;
+
+            font-size: 12px;
+
+            box-shadow:
+                0 15px 35px
+                rgba(0,0,0,0.2);
+
+            transform: translateY(90px);
+
+            opacity: 0;
+
+            transition: 0.25s;
+
+            z-index: 300;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+
+            opacity: 1;
+        }
+
+
+        /* =========================================================
+           MOBILE
+           ========================================================= */
+
+        .mobile-menu {
+            display: none;
+        }
+
+        @media (max-width: 900px) {
+
+            .stats {
+                grid-template-columns:
+                    1fr 1fr;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 680px) {
+
+            .sidebar {
+                transform: translateX(-100%);
+
+                transition: 0.25s;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+
+                padding: 15px;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .topbar {
+                justify-content: space-between;
+            }
+
+            .stats {
+                grid-template-columns:
+                    1fr 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field.full {
+                grid-column: auto;
+            }
+
+            .profile-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                🌿
+            </div>
+
+            <div>
+
+                <h1>GreenTask</h1>
+
+                <small>
+                    Gestão inteligente de jardinagem
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="menu-title">
+            MENU PRINCIPAL
+        </div>
+
+        <nav class="menu">
+
+            <button
+                class="active"
+                data-view="dashboard">
+
+                <span class="menu-icon">⌂</span>
+                Dashboard
+
+            </button>
+
+            <button data-view="equipe">
+
+                <span class="menu-icon">👥</span>
+                Equipe
+
+            </button>
+
+            <button data-view="areas">
+
+                <span class="menu-icon">🌱</span>
+                Áreas
+
+            </button>
+
+            <button data-view="tarefas">
+
+                <span class="menu-icon">▣</span>
+                Tarefas
+
+            </button>
+
+            <button data-view="servicos">
+
+                <span class="menu-icon">🛠</span>
+                Serviços
+
+            </button>
+
+            <button data-view="manutencao">
+
+                <span class="menu-icon">🔧</span>
+                Manutenção
+
+            </button>
+
+            <button data-view="relatorios">
+
+                <span class="menu-icon">📊</span>
+                Relatórios
+
+            </button>
+
+            <button data-view="configuracoes">
+
+                <span class="menu-icon">⚙</span>
+                Configurações
+
+            </button>
+
+        </nav>
+
+        <div class="sidebar-footer">
+
+            Juntos por áreas verdes<br>
+            mais saudáveis.
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         ÁREA PRINCIPAL
+         ===================================================== -->
+
+    <main class="main">
+
+
+        <!-- =================================================
+             TOPO
+             ================================================= -->
+
+        <div class="topbar">
+
+            <button
+                class="top-icon mobile-menu"
+                id="mobileMenu">
+
+                ☰
+
+            </button>
+
+            <div style="flex:1"></div>
+
+            <button
+                class="top-icon">
+
+                🔔
+
+            </button>
+
+            <div class="perfil-mini">
+
+                <div
+                    class="avatar"
+                    id="topAvatar">
+
+                    EG
+
+                </div>
+
+                <div>
+
+                    <strong id="topName">
+                        Erisvan Gomes
+                    </strong>
+
+                    <small id="topRole">
+                        Administrador
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             DASHBOARD
+             ================================================= -->
+
+        <section
+            class="view active"
+            id="view-dashboard">
+
+            <h1 class="page-title">
+                Dashboard
+            </h1>
+
+            <p class="page-subtitle">
+                Visão geral da operação de jardinagem
+            </p>
+
+
+            <div class="hero">
+
+                <h2 id="greeting">
+                    Bom dia, Erisvan! 🌿
+                </h2>
+
+                <p>
+                    Aqui está o resumo das atividades
+                    de jardinagem de hoje.
+                </p>
+
+                <div
+                    class="date-pill"
+                    id="currentDate">
+
+                    📅 Carregando...
+
+                </div>
+
+            </div>
+
+
+            <!-- ESTATÍSTICAS -->
+
+            <div class="stats">
+
+
+                <div class="card stat-card">
+
+                    <div class="stat-icon">
+                        👥
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Funcionários
+                        </span>
+
+                        <strong id="statEmployees">
+                            0
+                        </strong>
+
+                        <span>
+                            cadastrados
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card stat-card">
+
+                    <div class="stat-icon">
+                        ▣
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Tarefas pendentes
+                        </span>
+
+                        <strong id="statPending">
+                            0
+                        </strong>
+
+                        <span>
+                            aguardando execução
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card stat-card">
+
+                    <div class="stat-icon">
+                        ⏱
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Em andamento
+                        </span>
+
+                        <strong id="statProgress">
+                            0
+                        </strong>
+
+                        <span>
+                            em execução
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card stat-card">
+
+                    <div class="stat-icon">
+                        ✓
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Concluídas
+                        </span>
+
+                        <strong id="statDone">
+                            0
+                        </strong>
+
+                        <span>
+                            finalizadas
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- DASHBOARD INFERIOR -->
+
+            <div class="dashboard-grid">
+
+
+                <div class="card section-card">
+
+                    <div class="section-header">
+
+                        <h3>
+                            ▣ Tarefas de hoje
+                        </h3>
+
+                        <button
+                            class="link-button"
+                            onclick="showView('tarefas')">
+
+                            Ver todas →
+
+                        </button>
+
+                    </div>
+
+                    <div id="dashboardTasks"></div>
+
+                </div>
+
+
+                <div class="card section-card">
+
+                    <div class="section-header">
+
+                        <h3>
+                            🌿 Áreas de jardinagem
+                        </h3>
+
+                        <button
+                            class="link-button"
+                            onclick="showView('areas')">
+
+                            Ver todas →
+
+                        </button>
+
+                    </div>
+
+                    <div id="dashboardAreas"></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             EQUIPE
+             ================================================= -->
+
+        <section
+            class="view"
+            id="view-equipe">
+
+            <h1 class="page-title">
+                Equipe
+            </h1>
+
+            <p class="page-subtitle">
+                Cadastre e acompanhe os profissionais
+                da jardinagem.
+            </p>
+
+
+            <div class="toolbar">
+
+                <button
+                    class="btn-primary"
+                    onclick="openEmployeeModal()">
+
+                    + Adicionar funcionário
+
+                </button>
+
+                <input
+                    class="search"
+                    id="employeeSearch"
+                    placeholder="Pesquisar funcionário..."
+                    oninput="renderEmployees()">
+
+            </div>
+
+
+            <div class="card section-card">
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Funcionário
+                                </th>
+
+                                <th>
+                                    Cargo
+                                </th>
+
+                                <th>
+                                    Área
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Ações
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="employeeTable"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             ÁREAS
+             ================================================= -->
+
+        <section
+            class="view"
+            id="view-areas">
+
+            <h1 class="page-title">
+                Áreas de jardinagem
+            </h1>
+
+            <p class="page-subtitle">
+                Cadastre novas áreas e organize
+                todos os espaços verdes.
+            </p>
+
+
+            <div class="toolbar">
+
+                <button
+                    class="btn-primary"
+                    onclick="openAreaModal()">
+
+                    + Adicionar área
+
+                </button>
+
+            </div>
+
+
+            <div
+                class="area-grid"
+                id="areaGrid">
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             TAREFAS
+             ================================================= -->
+
+        <section
+            class="view"
+            id="view-tarefas">
+
+            <h1 class="page-title">
+                Tarefas
+            </h1>
+
+            <p class="page-subtitle">
+                Controle o que está pendente,
+                em andamento e concluído.
+            </p>
+
+
+            <div class="toolbar">
+
+                <button
+                    class="btn-primary"
+                    onclick="openTaskModal()">
+
+                    + Nova tarefa
+
+                </button>
+
+                <input
+                    class="search"
+                    id="taskSearch"
+                    placeholder="Pesquisar tarefa..."
+                    oninput="renderTasks()">
+
+            </div>
+
+
+            <div class="card section-card">
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Tarefa
+                                </th>
+
+                                <th>
+                                    Responsável
+                                </th>
+
+                                <th>
+                                    Área
+                                </th>
+
+                                <th>
+                                    Data
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Ações
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="taskTable"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             SERVIÇOS
+             ================================================= -->
+
+        <section
+            class="view"
+            id="view-servicos">
+
+            <h1 class="page-title">
+                Serviços
+            </h1>
+
+            <p class="page-subtitle">
+                Registre os serviços realizados
+                pela equipe.
+            </p>
+
+
+            <div class="toolbar">
+
+                <button
+                    class="btn-primary"
+                    onclick="openServiceModal()">
+
+                    + Registrar serviço
+
+                </button>
+
+            </div>
+
+
+            <div class="card section-card">
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Serviço
+                                </th>
+
+                                <th>
+                                    Área
+                                </th>
+
+                                <th>
+                                    Responsável
+                                </th>
+
+                                <th>
+                                    Data
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Ações
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="serviceTable"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             MANUTENÇÃO
+             ================================================= -->
+
+        <section
+            class="view"
+            id="view-manutencao">
+
+            <h1 class="page-title">
+                Manutenção
+            </h1>
+
+            <p class="page-subtitle">
+                Controle equipamentos e ferramentas.
+            </p>
+
+
+            <div class="toolbar">
+
+                <button
+                    class="btn-primary"
+                    onclick="openMaintenanceModal()">
+
+                    + Adicionar equipamento
+
+                </button>
+
+            </div>
+
+
+            <div class="card section-card">
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Equipamento
+                                </th>
+
+                                <th>
+                                    Categoria
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Última manutenção
+                                </th>
+
+                                <th>
+                                    Próxima
+                                </th>
+
+                                <th>
+                                    Ações
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="maintenanceTable"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             RELATÓRIOS
+             ================================================= -->
+
+        <section
+            class="view"
+            id="view-relatorios">
+
+            <h1 class="page-title">
+                Relatórios
+            </h1>
+
+            <p class="page-subtitle">
+                Resumo dos dados cadastrados no GreenTask.
+            </p>
+
+
+            <div
+                class="kpis"
+                id="reportKpis">
+
+            </div>
+
+
+            <div
+                class="card section-card"
+                style="margin-top:18px">
+
+                <div class="section-header">
+
+                    <h3>
+                        Resumo por área
+                    </h3>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Área
+                                </th>
+
+                                <th>
+                                    Tarefas
+                                </th>
+
+                                <th>
+                                    Concluídas
+                                </th>
+
+                                <th>
+                                    Pendentes
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="reportAreas"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             CONFIGURAÇÕES
+             ================================================= -->
+
+        <section
+            class="view"
+            id="view-configuracoes">
+
+            <h1 class="page-title">
+                Configurações
+            </h1>
+
+            <p class="page-subtitle">
+                Edite o perfil do administrador.
+            </p>
+
+
+            <div class="card section-card">
+
+                <div class="profile-container">
+
+                    <div>
+
+                        <div
+                            class="big-avatar"
+                            id="bigAvatar">
+
+                            EG
+
+                        </div>
+
+                    </div>
+
+
+                    <form id="profileForm">
+
+                        <div class="form-grid">
+
+                            <div class="field">
+
+                                <label>
+                                    Nome
+                                </label>
+
+                                <input
+                                    id="profileName"
+                                    required>
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label>
+                                    Cargo
+                                </label>
+
+                                <input
+                                    id="profileRole"
+                                    required>
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label>
+                                    E-mail
+                                </label>
+
+                                <input
+                                    id="profileEmail"
+                                    type="email">
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label>
+                                    Telefone
+                                </label>
+
+                                <input
+                                    id="profilePhone">
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="modal-actions">
+
+                            <button
+                                class="btn-primary"
+                                type="submit">
+
+                                Salvar perfil
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================================
+     MODAL
+     ========================================================= -->
+
+<div
+    class="modal-background"
+    id="modalBackground">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <h3 id="modalTitle">
+                Novo cadastro
+            </h3>
+
+            <button
+                class="close"
+                onclick="closeModal()">
+
+                ✕
+
+            </button>
+
+        </div>
+
+        <form id="modalForm"></form>
+
+    </div>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div
+    class="toast"
+    id="toast">
+
+    Salvo com sucesso.
+
+</div>
+
+
+<script>
+
+/* =============================================================
+   DADOS INICIAIS
+   ============================================================= */
+
+const STORAGE_KEY = "greentask_v1";
+
+
+const defaultData = {
+
+    profile: {
+
+        name: "Erisvan Gomes",
+
+        role: "Administrador",
+
+        email: "",
+
+        phone: ""
+
+    },
+
+
+    employees: [
+
+        {
+            id: 1,
+            name: "Carlos Mendes",
+            role: "Jardineiro",
+            area: "Área Externa",
+            status: "Ativo"
+        },
+
+        {
+            id: 2,
+            name: "Ana Costa",
+            role: "Jardineira",
+            area: "Bambuzal",
+            status: "Ativo"
+        },
+
+        {
+            id: 3,
+            name: "Pedro Lima",
+            role: "Jardineiro",
+            area: "Jardim de Oração",
+            status: "Ativo"
+        }
+
+    ],
+
+
+    areas: [
+
+        {
+            id: 1,
+            name: "Jardim Central",
+            type: "Área principal",
+            icon: "🌳",
+            status: "Concluído"
+        },
+
+        {
+            id: 2,
+            name: "Jardim de Oração",
+            type: "Área religiosa",
+            icon: "🌸",
+            status: "Andamento"
+        },
+
+        {
+            id: 3,
+            name: "Área Externa",
+            type: "Canteiros e muros",
+            icon: "🌴",
+            status: "Pendente"
+        },
+
+        {
+            id: 4,
+            name: "Bambuzal",
+            type: "Área verde",
+            icon: "🎋",
+            status: "Pendente"
+        }
+
+    ],
+
+
+    tasks: [
+
+        {
+            id: 1,
+            title: "Regar jardim central",
+            responsible: "Carlos Mendes",
+            area: "Jardim Central",
+            date: "",
+            status: "Concluída"
+        },
+
+        {
+            id: 2,
+            title: "Podar árvores",
+            responsible: "Carlos Mendes",
+            area: "Área Externa",
+            date: "",
+            status: "Em andamento"
+        },
+
+        {
+            id: 3,
+            title: "Limpar bambuzal",
+            responsible: "Ana Costa",
+            area: "Bambuzal",
+            date: "",
+            status: "Pendente"
+        },
+
+        {
+            id: 4,
+            title: "Adubar plantas",
+            responsible: "Pedro Lima",
+            area: "Jardim de Oração",
+            date: "",
+            status: "Pendente"
+        }
+
+    ],
+
+
+    services: [],
+
+
+    maintenance: []
+
+};
+
+
+/* =============================================================
+   CARREGAMENTO DOS DADOS
+   ============================================================= */
+
+let data = loadData();
+
+let modalType = "";
+
+let editingId = null;
+
+
+function loadData() {
+
+    try {
+
+        const saved =
+            localStorage.getItem(STORAGE_KEY);
+
+        if (saved) {
+
+            const parsed =
+                JSON.parse(saved);
+
+            /*
+             * Mantém novos campos caso
+             * futuramente você atualize o sistema.
+             */
+
+            return {
+
+                ...structuredClone(defaultData),
+
+                ...parsed
+
+            };
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao carregar dados:",
+            error
+        );
+
+    }
+
+    return structuredClone(defaultData);
+
+}
+
+
+function saveData() {
+
+    localStorage.setItem(
+
+        STORAGE_KEY,
+
+        JSON.stringify(data)
+
+    );
+
+}
+
+
+/* =============================================================
+   UTILITÁRIOS
+   ============================================================= */
+
+function nextId(array) {
+
+    if (!array.length) {
+
+        return 1;
+
+    }
+
+    return Math.max(
+
+        ...array.map(item =>
+            Number(item.id) || 0
+        )
+
+    ) + 1;
+
+}
+
+
+function initials(name) {
+
+    return (
+
+        name
+            .trim()
+            .split(/\s+/)
+            .slice(0,2)
+            .map(word => word[0])
+            .join("")
+            .toUpperCase()
+
+    ) || "EG";
+
+}
+
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+
+        .replace(/&/g, "&amp;")
+
+        .replace(/</g, "&lt;")
+
+        .replace(/>/g, "&gt;")
+
+        .replace(/"/g, "&quot;")
+
+        .replace(/'/g, "&#039;");
+
+}
+
+
+function todayISO() {
+
+    const date = new Date();
+
+    const offset =
+        date.getTimezoneOffset();
+
+    return new Date(
+        date.getTime() -
+        offset * 60000
+    )
+        .toISOString()
+        .slice(0,10);
+
+}
+
+
+function formatDate(date) {
+
+    if (!date) {
+
+        return "-";
+
+    }
+
+    const parts =
+        date.split("-");
+
+    if (parts.length !== 3) {
+
+        return date;
+
+    }
+
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+
+}
+
+
+function showToast(message) {
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    setTimeout(() => {
+
+        toast.classList.remove("show");
+
+    }, 2500);
+
+}
+
+
+/* =============================================================
+   DATA E SAUDAÇÃO
+   ============================================================= */
+
+function updateHeader() {
+
+    document.getElementById(
+        "topName"
+    ).textContent =
+        data.profile.name;
+
+
+    document.getElementById(
+        "topRole"
+    ).textContent =
+        data.profile.role;
+
+
+    document.getElementById(
+        "topAvatar"
+    ).textContent =
+        initials(data.profile.name);
+
+}
+
+
+function updateGreeting() {
+
+    const hour =
+        new Date().getHours();
+
+
+    let greeting;
+
+
+    if (hour >= 5 && hour < 12) {
+
+        greeting = "Bom dia";
+
+    }
+
+    else if (hour >= 12 && hour < 18) {
+
+        greeting = "Boa tarde";
+
+    }
+
+    else {
+
+        greeting = "Boa noite";
+
+    }
+
+
+    const firstName =
+        data.profile.name
+            .split(" ")[0];
+
+
+    document.getElementById(
+        "greeting"
+    ).textContent =
+        `${greeting}, ${firstName}! 🌿`;
+
+
+    document.getElementById(
+        "currentDate"
+    ).textContent =
+        "📅 " +
+        new Date().toLocaleDateString(
+            "pt-BR",
+            {
+                weekday: "long",
+                day: "2-digit",
+                month: "long",
+                year: "numeric"
+            }
+        );
+
+}
+
+
+/* =============================================================
+   NAVEGAÇÃO
+   ============================================================= */
+
+function showView(view) {
+
+    document
+        .querySelectorAll(".view")
+        .forEach(section => {
+
+            section.classList.remove("active");
+
+        });
+
+
+    const target =
+        document.getElementById(
+            "view-" + view
+        );
+
+
+    if (target) {
+
+        target.classList.add("active");
+
+    }
+
+
+    document
+        .querySelectorAll(".menu button")
+        .forEach(button => {
+
+            button.classList.toggle(
+
+                "active",
+
+                button.dataset.view === view
+
+            );
+
+        });
+
+
+    document
+        .getElementById("sidebar")
+        .classList.remove("open");
+
+
+    if (view === "dashboard") {
+
+        renderDashboard();
+
+    }
+
+    if (view === "equipe") {
+
+        renderEmployees();
+
+    }
+
+    if (view === "areas") {
+
+        renderAreas();
+
+    }
+
+    if (view === "tarefas") {
+
+        renderTasks();
+
+    }
+
+    if (view === "servicos") {
+
+        renderServices();
+
+    }
+
+    if (view === "manutencao") {
+
+        renderMaintenance();
+
+    }
+
+    if (view === "relatorios") {
+
+        renderReports();
+
+    }
+
+    if (view === "configuracoes") {
+
+        renderProfile();
+
+    }
+
+}
+
+
+document
+    .querySelectorAll(".menu button")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                showView(
+                    button.dataset.view
+                );
+
+            }
+        );
+
+    });
+
+
+document
+    .getElementById("mobileMenu")
+    .addEventListener(
+        "click",
+        () => {
+
+            document
+                .getElementById("sidebar")
+                .classList.toggle("open");
+
+        }
+    );
+
+
+/* =============================================================
+   DASHBOARD
+   ============================================================= */
+
+function renderDashboard() {
+
+    updateGreeting();
+
+
+    document.getElementById(
+        "statEmployees"
+    ).textContent =
+        data.employees.length;
+
+
+    document.getElementById(
+        "statPending"
+    ).textContent =
+        data.tasks.filter(
+            task =>
+                task.status === "Pendente"
+        ).length;
+
+
+    document.getElementById(
+        "statProgress"
+    ).textContent =
+        data.tasks.filter(
+            task =>
+                task.status === "Em andamento"
+        ).length;
+
+
+    document.getElementById(
+        "statDone"
+    ).textContent =
+        data.tasks.filter(
+            task =>
+                task.status === "Concluída"
+        ).length;
+
+
+    renderDashboardTasks();
+
+    renderDashboardAreas();
+
+}
+
+
+function renderDashboardTasks() {
+
+    const container =
+        document.getElementById(
+            "dashboardTasks"
+        );
+
+
+    if (!data.tasks.length) {
+
+        container.innerHTML =
+            `<div class="empty">
+                Nenhuma tarefa cadastrada.
+            </div>`;
+
+        return;
+
+    }
+
+
+    const tasks =
+        data.tasks.slice(0,5);
+
+
+    container.innerHTML =
+        tasks.map(task => {
+
+            const done =
+                task.status === "Concluída";
+
+
+            const badgeClass =
+                task.status === "Pendente"
+                    ? "badge-pendente"
+                    : task.status === "Em andamento"
+                        ? "badge-andamento"
+                        : "badge-concluida";
+
+
+            return `
+
+                <div class="list-row">
+
+                    <div
+                        class="check"
+                        style="${
+                            done
+                            ? 'background:#16a56d;color:white;border-color:#16a56d'
+                            : ''
+                        }">
+
+                        ${done ? "✓" : ""}
+
+                    </div>
+
+
+                    <div class="grow">
+
+                        <strong>
+                            ${escapeHTML(task.title)}
+                        </strong>
+
+                        <small>
+                            ${escapeHTML(task.responsible)}
+                            •
+                            ${escapeHTML(task.area)}
+                        </small>
+
+                    </div>
+
+
+                    <span
+                        class="badge ${badgeClass}">
+
+                        ${escapeHTML(task.status)}
+
+                    </span>
+
+                </div>
+
+            `;
+
+        })
+        .join("");
+
+}
+
+
+function renderDashboardAreas() {
+
+    const container =
+        document.getElementById(
+            "dashboardAreas"
+        );
+
+
+    if (!data.areas.length) {
+
+        container.innerHTML =
+            `<div class="empty">
+                Nenhuma área cadastrada.
+            </div>`;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        data.areas
+            .slice(0,6)
+            .map(area => {
+
+                return `
+
+                    <div class="list-row">
+
+                        <div class="area-icon">
+
+                            ${escapeHTML(area.icon)}
+
+                        </div>
+
+                        <div class="grow">
+
+                            <strong>
+                                ${escapeHTML(area.name)}
+                            </strong>
+
+                            <small>
+                                ${escapeHTML(area.type)}
+                            </small>
+
+                        </div>
+
+                        <span class="badge ${
+                            area.status === "Concluído"
+                            ? "badge-concluida"
+                            : area.status === "Andamento"
+                                ? "badge-andamento"
+                                : "badge-pendente"
+                        }">
+
+                            ${escapeHTML(area.status)}
+
+                        </span>
+
+                    </div>
+
+                `;
+
+            })
+            .join("");
+
+}
+
+
+/* =============================================================
+   FUNCIONÁRIOS
+   ============================================================= */
+
+function renderEmployees() {
+
+    const tbody =
+        document.getElementById(
+            "employeeTable"
+        );
+
+
+    const search =
+        (
+            document.getElementById(
+                "employeeSearch"
+            )?.value || ""
+        )
+        .toLowerCase();
+
+
+    const employees =
+        data.employees.filter(
+            employee =>
+                employee.name
+                    .toLowerCase()
+                    .includes(search)
+        );
+
+
+    if (!employees.length) {
+
+        tbody.innerHTML =
+            `<tr>
+                <td colspan="5">
+                    <div class="empty">
+                        Nenhum funcionário encontrado.
+                    </div>
+                </td>
+            </tr>`;
+
+        return;
+
+    }
+
+
+    tbody.innerHTML =
+        employees.map(employee => {
+
+            return `
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            ${escapeHTML(employee.name)}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${escapeHTML(employee.role)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(employee.area)}
+                    </td>
+
+                    <td>
+
+                        <span class="badge ${
+                            employee.status === "Ativo"
+                            ? "badge-ativo"
+                            : "badge-inativo"
+                        }">
+
+                            ${escapeHTML(employee.status)}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn-edit"
+                            onclick="editEmployee(${employee.id})">
+
+                            Editar
+
+                        </button>
+
+                        <button
+                            class="btn-delete"
+                            onclick="deleteEmployee(${employee.id})">
+
+                            Excluir
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        })
+        .join("");
+
+}
+
+
+function openEmployeeModal(id = null) {
+
+    modalType = "employee";
+
+    editingId = id;
+
+
+    const employee =
+        id
+            ? data.employees.find(
+                item => item.id === id
+            )
+            : null;
+
+
+    document.getElementById(
+        "modalTitle"
+    ).textContent =
+        employee
+            ? "Editar funcionário"
+            : "Adicionar funcionário";
+
+
+    document.getElementById(
+        "modalForm"
+    ).innerHTML = `
+
+        <div class="form-grid">
+
+            <div class="field">
+
+                <label>
+                    Nome
+                </label>
+
+                <input
+                    id="formName"
+                    value="${employee ? escapeHTML(employee.name) : ""}"
+                    required>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Cargo
+                </label>
+
+                <input
+                    id="formRole"
+                    value="${employee ? escapeHTML(employee.role) : ""}"
+                    placeholder="Ex.: Jardineiro"
+                    required>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Área
+                </label>
+
+                <select id="formArea">
+
+                    ${areaOptions(
+                        employee?.area || ""
+                    )}
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Status
+                </label>
+
+                <select id="formStatus">
+
+                    <option ${
+                        employee?.status === "Ativo"
+                        ? "selected"
+                        : ""
+                    }>
+                        Ativo
+                    </option>
+
+                    <option ${
+                        employee?.status === "Férias"
+                        ? "selected"
+                        : ""
+                    }>
+                        Férias
+                    </option>
+
+                    <option ${
+                        employee?.status === "Afastado"
+                        ? "selected"
+                        : ""
+                    }>
+                        Afastado
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="btn-secondary"
+                onclick="closeModal()">
+
+                Cancelar
+
+            </button>
+
+            <button
+                type="submit"
+                class="btn-primary">
+
+                Salvar funcionário
+
+            </button>
+
+        </div>
+
+    `;
+
+
+    openModal();
+
+}
+
+
+function editEmployee(id) {
+
+    openEmployeeModal(id);
+
+}
+
+
+function deleteEmployee(id) {
+
+    const employee =
+        data.employees.find(
+            item => item.id === id
+        );
+
+
+    if (!employee) return;
+
+
+    if (
+        !confirm(
+            `Excluir ${employee.name}?`
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    data.employees =
+        data.employees.filter(
+            item => item.id !== id
+        );
+
+
+    saveData();
+
+    renderEmployees();
+
+    renderDashboard();
+
+    showToast(
+        "Funcionário excluído."
+    );
+
+}
+
+
+/* =============================================================
+   ÁREAS
+   ============================================================= */
+
+function renderAreas() {
+
+    const container =
+        document.getElementById(
+            "areaGrid"
+        );
+
+
+    if (!data.areas.length) {
+
+        container.innerHTML =
+            `<div class="card empty">
+                Nenhuma área cadastrada.
+            </div>`;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        data.areas.map(area => {
+
+            return `
+
+                <div class="area-card">
+
+                    <div class="area-card-top">
+
+                        <div class="area-big-icon">
+
+                            ${escapeHTML(area.icon)}
+
+                        </div>
+
+                        <span
+                            class="badge ${
+                                area.status === "Concluído"
+                                ? "badge-concluida"
+                                : area.status === "Andamento"
+                                    ? "badge-andamento"
+                                    : "badge-pendente"
+                            }">
+
+                            ${escapeHTML(area.status)}
+
+                        </span>
+
+                    </div>
+
+
+                    <h3>
+                        ${escapeHTML(area.name)}
+                    </h3>
+
+                    <p>
+                        ${escapeHTML(area.type)}
+                    </p>
+
+
+                    <div class="area-actions">
+
+                        <button
+                            class="btn-edit"
+                            onclick="editArea(${area.id})">
+
+                            Editar
+
+                        </button>
+
+                        <button
+                            class="btn-delete"
+                            onclick="deleteArea(${area.id})">
+
+                            Excluir
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        })
+        .join("");
+
+}
+
+
+function openAreaModal(id = null) {
+
+    modalType = "area";
+
+    editingId = id;
+
+
+    const area =
+        id
+            ? data.areas.find(
+                item => item.id === id
+            )
+            : null;
+
+
+    document.getElementById(
+        "modalTitle"
+    ).textContent =
+        area
+            ? "Editar área"
+            : "Adicionar nova área";
+
+
+    document.getElementById(
+        "modalForm"
+    ).innerHTML = `
+
+        <div class="form-grid">
+
+            <div class="field">
+
+                <label>
+                    Nome da área
+                </label>
+
+                <input
+                    id="areaName"
+                    value="${area ? escapeHTML(area.name) : ""}"
+                    placeholder="Ex.: Jardim das Palmeiras"
+                    required>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Tipo / descrição
+                </label>
+
+                <input
+                    id="areaType"
+                    value="${area ? escapeHTML(area.type) : ""}"
+                    placeholder="Ex.: Canteiros">
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Ícone
+                </label>
+
+                <select id="areaIcon">
+
+                    ${iconOptions(
+                        area?.icon || "🌱"
+                    )}
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Status
+                </label>
+
+                <select id="areaStatus">
+
+                    <option ${
+                        area?.status === "Pendente"
+                        ? "selected"
+                        : ""
+                    }>
+                        Pendente
+                    </option>
+
+                    <option ${
+                        area?.status === "Andamento"
+                        ? "selected"
+                        : ""
+                    }>
+                        Andamento
+                    </option>
+
+                    <option ${
+                        area?.status === "Concluído"
+                        ? "selected"
+                        : ""
+                    }>
+                        Concluído
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="btn-secondary"
+                onclick="closeModal()">
+
+                Cancelar
+
+            </button>
+
+            <button
+                type="submit"
+                class="btn-primary">
+
+                Salvar área
+
+            </button>
+
+        </div>
+
+    `;
+
+
+    openModal();
+
+}
+
+
+function editArea(id) {
+
+    openAreaModal(id);
+
+}
+
+
+function deleteArea(id) {
+
+    const area =
+        data.areas.find(
+            item => item.id === id
+        );
+
+
+    if (!area) return;
+
+
+    if (
+        !confirm(
+            `Excluir a área "${area.name}"?`
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    data.areas =
+        data.areas.filter(
+            item => item.id !== id
+        );
+
+
+    saveData();
+
+    renderAreas();
+
+    renderDashboard();
+
+    showToast(
+        "Área excluída."
+    );
+
+}
+
+
+/* =============================================================
+   TAREFAS
+   ============================================================= */
+
+function renderTasks() {
+
+    const tbody =
+        document.getElementById(
+            "taskTable"
+        );
+
+
+    const search =
+        (
+           document.getElementById(
+                "taskSearch"
+            )?.value || ""
+        )
+        .toLowerCase();
+
+
+    const tasks =
+        data.tasks.filter(
+            task =>
+                task.title
+                    .toLowerCase()
+                    .includes(search)
+        );
+
+
+    if (!tasks.length) {
+
+        tbody.innerHTML =
+            `<tr>
+                <td colspan="6">
+                    <div class="empty">
+                        Nenhuma tarefa encontrada.
+                    </div>
+                </td>
+            </tr>`;
+
+        return;
+
+    }
+
+
+    tbody.innerHTML =
+        tasks.map(task => {
+
+            const badgeClass =
+                task.status === "Pendente"
+                    ? "badge-pendente"
+                    : task.status === "Em andamento"
+                        ? "badge-andamento"
+                        : "badge-concluida";
+
+
+            return `
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            ${escapeHTML(task.title)}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${escapeHTML(task.responsible)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(task.area)}
+                    </td>
+
+                    <td>
+                        ${formatDate(task.date)}
+                    </td>
+
+                    <td>
+
+                        <span class="badge ${badgeClass}">
+
+                            ${escapeHTML(task.status)}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn-edit"
+                            onclick="editTask(${task.id})">
+
+                            Editar
+
+                        </button>
+
+                        <button
+                            class="btn-delete"
+                            onclick="deleteTask(${task.id})">
+
+                            Excluir
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        })
+        .join("");
+
+}
+
+
+function openTaskModal(id = null) {
+
+    modalType = "task";
+
+    editingId = id;
+
+
+    const task =
+        id
+            ? data.tasks.find(
+                item => item.id === id
+            )
+            : null;
+
+
+    document.getElementById(
+        "modalTitle"
+    ).textContent =
+        task
+            ? "Editar tarefa"
+            : "Nova tarefa";
+
+
+    document.getElementById(
+        "modalForm"
+    ).innerHTML = `
+
+        <div class="form-grid">
+
+            <div class="field full">
+
+                <label>
+                    Nome da tarefa
+                </label>
+
+                <input
+                    id="taskTitle"
+                    value="${task ? escapeHTML(task.title) : ""}"
+                    placeholder="Ex.: Podar árvores do jardim central"
+                    required>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Responsável
+                </label>
+
+                <select id="taskResponsible">
+
+                    ${employeeOptions(
+                        task?.responsible || ""
+                    )}
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Área
+                </label>
+
+                <select id="taskArea">
+
+                    ${areaOptions(
+                        task?.area || ""
+                    )}
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Data
+                </label>
+
+                <input
+                    id="taskDate"
+                    type="date"
+                    value="${task?.date || todayISO()}">
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Status
+                </label>
+
+                <select id="taskStatus">
+
+                    <option ${
+                        task?.status === "Pendente"
+                        ? "selected"
+                        : ""
+                    }>
+                        Pendente
+                    </option>
+
+                    <option ${
+                        task?.status === "Em andamento"
+                        ? "selected"
+                        : ""
+                    }>
+                        Em andamento
+                    </option>
+
+                    <option ${
+                        task?.status === "Concluída"
+                        ? "selected"
+                        : ""
+                    }>
+                        Concluída
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="btn-secondary"
+                onclick="closeModal()">
+
+                Cancelar
+
+            </button>
+
+            <button
+                type="submit"
+                class="btn-primary">
+
+                Salvar tarefa
+
+            </button>
+
+        </div>
+
+    `;
+
+
+    openModal();
+
+}
+
+
+function editTask(id) {
+
+    openTaskModal(id);
+
+}
+
+
+function deleteTask(id) {
+
+    if (
+        !confirm(
+            "Excluir esta tarefa?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    data.tasks =
+        data.tasks.filter(
+            item => item.id !== id
+        );
+
+
+    saveData();
+
+    renderTasks();
+
+    renderDashboard();
+
+    showToast(
+        "Tarefa excluída."
+    );
+
+}
+
+
+/* =============================================================
+   SERVIÇOS
+   ============================================================= */
+
+function renderServices() {
+
+    const tbody =
+        document.getElementById(
+            "serviceTable"
+        );
+
+
+    if (!data.services.length) {
+
+        tbody.innerHTML =
+            `<tr>
+                <td colspan="6">
+                    <div class="empty">
+                        Nenhum serviço registrado.
+                        Clique em "+ Registrar serviço".
+                    </div>
+                </td>
+            </tr>`;
+
+        return;
+
+    }
+
+
+    tbody.innerHTML =
+        data.services.map(service => {
+
+            return `
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            ${escapeHTML(service.name)}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${escapeHTML(service.area)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(service.responsible)}
+                    </td>
+
+                    <td>
+                        ${formatDate(service.date)}
+                    </td>
+
+                    <td>
+
+                        <span class="badge ${
+                            service.status === "Concluído"
+                            ? "badge-concluida"
+                            : "badge-andamento"
+                        }">
+
+                            ${escapeHTML(service.status)}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn-edit"
+                            onclick="editService(${service.id})">
+
+                            Editar
+
+                        </button>
+
+                        <button
+                            class="btn-delete"
+                            onclick="deleteService(${service.id})">
+
+                            Excluir
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        })
+        .join("");
+
+}
+
+
+function openServiceModal(id = null) {
+
+    modalType = "service";
+
+    editingId = id;
+
+
+    const service =
+        id
+            ? data.services.find(
+                item => item.id === id
+            )
+            : null;
+
+
+    document.getElementById(
+        "modalTitle"
+    ).textContent =
+        service
+            ? "Editar serviço"
+            : "Registrar serviço";
+
+
+    document.getElementById(
+        "modalForm"
+    ).innerHTML = `
+
+        <div class="form-grid">
+
+            <div class="field full">
+
+                <label>
+                    Serviço
+                </label>
+
+                <input
+                    id="serviceName"
+                    value="${service ? escapeHTML(service.name) : ""}"
+                    placeholder="Ex.: Poda de árvores"
+                    required>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Área
+                </label>
+
+                <select id="serviceArea">
+
+                    ${areaOptions(
+                        service?.area || ""
+                    )}
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Responsável
+                </label>
+
+                <select id="serviceResponsible">
+
+                    ${employeeOptions(
+                        service?.responsible || ""
+                    )}
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Data
+                </label>
+
+                <input
+                    id="serviceDate"
+                    type="date"
+                    value="${service?.date || todayISO()}">
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Status
+                </label>
+
+                <select id="serviceStatus">
+
+                    <option ${
+                        service?.status === "Em andamento"
+                        ? "selected"
+                        : ""
+                    }>
+                        Em andamento
+                    </option>
+
+                    <option ${
+                        service?.status === "Concluído"
+                        ? "selected"
+                        : ""
+                    }>
+                        Concluído
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="btn-secondary"
+                onclick="closeModal()">
+
+                Cancelar
+
+            </button>
+
+            <button
+                type="submit"
+                class="btn-primary">
+
+                Salvar serviço
+
+            </button>
+
+        </div>
+
+    `;
+
+
+    openModal();
+
+}
+
+
+function editService(id) {
+
+    openServiceModal(id);
+
+}
+
+
+function deleteService(id) {
+
+    if (
+        !confirm(
+            "Excluir este serviço?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    data.services =
+        data.services.filter(
+            item => item.id !== id
+        );
+
+
+    saveData();
+
+    renderServices();
+
+    showToast(
+        "Serviço excluído."
+    );
+
+}
+
+
+/* =============================================================
+   MANUTENÇÃO
+   ============================================================= */
+
+function renderMaintenance() {
+
+    const tbody =
+        document.getElementById(
+            "maintenanceTable"
+        );
+
+
+    if (!data.maintenance.length) {
+
+        tbody.innerHTML =
+            `<tr>
+                <td colspan="6">
+                    <div class="empty">
+                        Nenhum equipamento cadastrado.
+                    </div>
+                </td>
+            </tr>`;
+
+        return;
+
+    }
+
+
+    tbody.innerHTML =
+        data.maintenance.map(item => {
+
+            return `
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            ${escapeHTML(item.name)}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${escapeHTML(item.category)}
+                    </td>
+
+                    <td>
+
+                        <span class="badge ${
+                            item.status === "Operacional"
+                            ? "badge-concluida"
+                            : "badge-pendente"
+                        }">
+
+                            ${escapeHTML(item.status)}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+                        ${formatDate(item.last)}
+                    </td>
+
+                    <td>
+                        ${formatDate(item.next)}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn-edit"
+                            onclick="editMaintenance(${item.id})">
+
+                            Editar
+
+                        </button>
+
+                        <button
+                            class="btn-delete"
+                            onclick="deleteMaintenance(${item.id})">
+
+                            Excluir
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        })
+        .join("");
+
+}
+
+
+function openMaintenanceModal(id = null) {
+
+    modalType = "maintenance";
+
+    editingId = id;
+
+
+    const item =
+        id
+            ? data.maintenance.find(
+                x => x.id === id
+            )
+            : null;
+
+
+    document.getElementById(
+        "modalTitle"
+    ).textContent =
+        item
+            ? "Editar equipamento"
+            : "Adicionar equipamento";
+
+
+    document.getElementById(
+        "modalForm"
+    ).innerHTML = `
+
+        <div class="form-grid">
+
+            <div class="field">
+
+                <label>
+                    Equipamento
+                </label>
+
+                <input
+                    id="maintenanceName"
+                    value="${item ? escapeHTML(item.name) : ""}"
+                    placeholder="Ex.: Roçadeira 01"
+                    required>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Categoria
+                </label>
+
+                <input
+                    id="maintenanceCategory"
+                    value="${item ? escapeHTML(item.category) : ""}"
+                    placeholder="Ex.: Roçadeira">
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Status
+                </label>
+
+                <select id="maintenanceStatus">
+
+                    <option ${
+                        item?.status === "Operacional"
+                        ? "selected"
+                        : ""
+                    }>
+                        Operacional
+                    </option>
+
+                    <option ${
+                        item?.status === "Em manutenção"
+                        ? "selected"
+                        : ""
+                    }>
+                        Em manutenção
+                    </option>
+
+                    <option ${
+                        item?.status === "Parado"
+                        ? "selected"
+                        : ""
+                    }>
+                        Parado
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Última manutenção
+                </label>
+
+                <input
+                    id="maintenanceLast"
+                    type="date"
+                    value="${item?.last || ""}">
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Próxima manutenção
+                </label>
+
+                <input
+                    id="maintenanceNext"
+                    type="date"
+                    value="${item?.next || ""}">
+
+            </div>
+
+        </div>
+
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="btn-secondary"
+                onclick="closeModal()">
+
+                Cancelar
+
+            </button>
+
+            <button
+                type="submit"
+                class="btn-primary">
+
+                Salvar equipamento
+
+            </button>
+
+        </div>
+
+    `;
+
+
+    openModal();
+
+}
+
+
+function editMaintenance(id) {
+
+    openMaintenanceModal(id);
+
+}
+
+
+function deleteMaintenance(id) {
+
+    if (
+        !confirm(
+            "Excluir este equipamento?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    data.maintenance =
+        data.maintenance.filter(
+            item => item.id !== id
+        );
+
+
+    saveData();
+
+    renderMaintenance();
+
+    showToast(
+        "Equipamento excluído."
+    );
+
+}
+
+
+/* =============================================================
+   RELATÓRIOS
+   ============================================================= */
+
+function renderReports() {
+
+    const totalTasks =
+        data.tasks.length;
+
+
+    const done =
+        data.tasks.filter(
+            x => x.status === "Concluída"
+        ).length;
+
+
+    const pending =
+        data.tasks.filter(
+            x => x.status === "Pendente"
+        ).length;
+
+
+    document.getElementById(
+        "reportKpis"
+    ).innerHTML = `
+
+        <div class="card kpi">
+
+            <strong>
+                ${data.employees.length}
+            </strong>
+
+            <span>
+                Funcionários
+            </span>
+
+        </div>
+
+
+        <div class="card kpi">
+
+            <strong>
+                ${totalTasks}
+            </strong>
+
+            <span>
+                Total de tarefas
+            </span>
+
+        </div>
+
+
+        <div class="card kpi">
+
+            <strong>
+                ${done}
+            </strong>
+
+            <span>
+                Tarefas concluídas
+            </span>
+
+        </div>
+
+    `;
+
+
+    const tbody =
+        document.getElementById(
+            "reportAreas"
+        );
+
+
+    if (!data.areas.length) {
+
+        tbody.innerHTML =
+            `<tr>
+                <td colspan="4">
+                    <div class="empty">
+                        Nenhuma área cadastrada.
+                    </div>
+                </td>
+            </tr>`;
+
+        return;
+
+    }
+
+
+    tbody.innerHTML =
+        data.areas.map(area => {
+
+            const tasks =
+                data.tasks.filter(
+                    task =>
+                        task.area === area.name
+                );
+
+
+            const completed =
+                tasks.filter(
+                    task =>
+                        task.status === "Concluída"
+                ).length;
+
+
+            const pend =
+                tasks.filter(
+                    task =>
+                        task.status === "Pendente"
+                ).length;
+
+
+            return `
+
+                <tr>
+
+                    <td>
+                        ${escapeHTML(area.name)}
+                    </td>
+
+                    <td>
+                        ${tasks.length}
+                    </td>
+
+                    <td>
+                        ${completed}
+                    </td>
+
+                    <td>
+                        ${pend}
+                    </td>
+
+                </tr>
+
+            `;
+
+        })
+        .join("");
+
+}
+
+
+/* =============================================================
+   PERFIL
+   ============================================================= */
+
+function renderProfile() {
+
+    document.getElementById(
+        "profileName"
+    ).value =
+        data.profile.name;
+
+
+    document.getElementById(
+        "profileRole"
+    ).value =
+        data.profile.role;
+
+
+    document.getElementById(
+        "profileEmail"
+    ).value =
+        data.profile.email || "";
+
+
+    document.getElementById(
+        "profilePhone"
+    ).value =
+        data.profile.phone || "";
+
+
+    document.getElementById(
+        "bigAvatar"
+    ).textContent =
+        initials(data.profile.name);
+
+}
+
+
+document
+    .getElementById("profileForm")
+    .addEventListener(
+        "submit",
+        event => {
+
+            event.preventDefault();
+
+
+            data.profile.name =
+                document
+                    .getElementById(
+                        "profileName"
+                    )
+                    .value
+                    .trim();
+
+
+            data.profile.role =
+                document
+                    .getElementById(
+                        "profileRole"
+                    )
+                    .value
+                    .trim();
+
+
+            data.profile.email =
+                document
+                    .getElementById(
+                        "profileEmail"
+                    )
+                    .value
+                    .trim();
+
+
+            data.profile.phone =
+                document
+                    .getElementById(
+                        "profilePhone"
+                    )
+                    .value
+                    .trim();
+
+
+            if (!data.profile.name) {
+
+                data.profile.name =
+                    "Erisvan Gomes";
+
+            }
+
+
+            if (!data.profile.role) {
+
+                data.profile.role =
+                    "Administrador";
+
+            }
+
+
+            saveData();
+
+            updateHeader();
+
+            renderProfile();
+
+            updateGreeting();
+
+            showToast(
+                "Perfil atualizado com sucesso."
+            );
+
+        }
+    );
+
+
+/* =============================================================
+   OPÇÕES DOS SELECTS
+   ============================================================= */
+
+function areaOptions(selected = "") {
+
+    if (!data.areas.length) {
+
+        return `
+            <option value="">
+                Nenhuma área cadastrada
+            </option>
+        `;
+
+    }
+
+
+    return data.areas.map(area => {
+
+        return `
+
+            <option
+                value="${escapeHTML(area.name)}"
+                ${
+                    selected === area.name
+                    ? "selected"
+                    : ""
+                }>
+
+                ${escapeHTML(area.name)}
+
+            </option>
+
+        `;
+
+    }).join("");
+
+}
+
+
+function employeeOptions(selected = "") {
+
+    if (!data.employees.length) {
+
+        return `
+            <option value="">
+                Nenhum funcionário cadastrado
+            </option>
+        `;
+
+    }
+
+
+    return data.employees.map(employee => {
+
+        return `
+
+            <option
+                value="${escapeHTML(employee.name)}"
+                ${
+                    selected === employee.name
+                    ? "selected"
+                    : ""
+                }>
+
+                ${escapeHTML(employee.name)}
+
+            </option>
+
+        `;
+
+    }).join("");
+
+}
+
+
+function iconOptions(selected = "🌱") {
+
+    const icons = [
+
+        "🌱",
+        "🌳",
+        "🌴",
+        "🌸",
+        "🌺",
+        "🌻",
+        "🌿",
+        "🎋",
+        "🍃",
+        "🌾",
+        "🪴",
+        "☘️"
+
+    ];
+
+
+    return icons.map(icon => {
+
+        return `
+
+            <option
+                value="${icon}"
+                ${
+                    selected === icon
+                    ? "selected"
+                    : ""
+                }>
+
+                ${icon}
+
+            </option>
+
+        `;
+
+    }).join("");
+
+}
+
+
+/* =============================================================
+   MODAL
+   ============================================================= */
+
+function openModal() {
+
+    document
+        .getElementById(
+            "modalBackground"
+        )
+        .classList.add("show");
+
+}
+
+
+function closeModal() {
+
+    document
+        .getElementById(
+            "modalBackground"
+        )
+        .classList.remove("show");
+
+
+    document
+        .getElementById(
+            "modalForm"
+        )
+        .innerHTML = "";
+
+
+    modalType = "";
+
+    editingId = null;
+
+}
+
+
+document
+    .getElementById("modalBackground")
+    .addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target.id ===
+                "modalBackground"
+            ) {
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+
+/* =============================================================
+   FORMULÁRIO DO MODAL
+   ============================================================= */
+
+document
+    .getElementById("modalForm")
+    .addEventListener(
+        "submit",
+        event => {
+
+            event.preventDefault();
+
+
+            /* ================================================
+               FUNCIONÁRIO
+               ================================================ */
+
+            if (
+                modalType ===
+                "employee"
+            ) {
+
+                const employee = {
+
+                    id:
+                        editingId ||
+                        nextId(
+                            data.employees
+                        ),
+
+                    name:
+                        document
+                            .getElementById(
+                                "formName"
+                            )
+                            .value
+                            .trim(),
+
+                    role:
+                        document
+                            .getElementById(
+                                "formRole"
+                            )
+                            .value
+                            .trim(),
+
+                    area:
+                        document
+                            .getElementById(
+                                "formArea"
+                            )
+                            .value,
+
+                    status:
+                        document
+                            .getElementById(
+                                "formStatus"
+                            )
+                            .value
+
+                };
+
+
+                if (editingId) {
+
+                    const index =
+                        data.employees.findIndex(
+                            item =>
+                                item.id ===
+                                editingId
+                        );
+
+
+                    data.employees[index] =
+                        employee;
+
+                }
+
+                else {
+
+                    data.employees.push(
+                        employee
+                    );
+
+                }
+
+
+                saveData();
+
+                closeModal();
+
+                renderEmployees();
+
+                renderDashboard();
+
+                showToast(
+                    "Funcionário salvo."
+                );
+
+            }
+
+
+            /* ================================================
+               ÁREA
+               ================================================ */
+
+            if (
+                modalType ===
+                "area"
+            ) {
+
+                const area = {
+
+                    id:
+                        editingId ||
+                        nextId(
+                            data.areas
+                        ),
+
+                    name:
+                        document
+                            .getElementById(
+                                "areaName"
+                            )
+                            .value
+                            .trim(),
+
+                    type:
+                        document
+                            .getElementById(
+                                "areaType"
+                            )
+                            .value
+                            .trim(),
+
+                    icon:
+                        document
+                            .getElementById(
+                                "areaIcon"
+                            )
+                            .value,
+
+                    status:
+                        document
+                            .getElementById(
+                                "areaStatus"
+                            )
+                            .value
+
+                };
+
+
+                if (!area.name) {
+
+                    alert(
+                        "Digite o nome da área."
+                    );
+
+                    return;
+
+                }
+
+
+                if (editingId) {
+
+                    const oldArea =
+                        data.areas.find(
+                            item =>
+                                item.id ===
+                                editingId
+                        );
+
+
+                    const oldName =
+                        oldArea?.name;
+
+
+                    const index =
+                        data.areas.findIndex(
+                            item =>
+                                item.id ===
+                                editingId
+                        );
+
+
+                    data.areas[index] =
+                        area;
+
+
+                    /*
+                     * Se o nome da área mudou,
+                     * atualizamos as tarefas.
+                     */
+
+                    if (
+                        oldName &&
+                        oldName !== area.name
+                    ) {
+
+                        data.tasks =
+                            data.tasks.map(
+                                task => {
+
+                                    if (
+                                        task.area ===
+                                        oldName
+                                    ) {
+
+                                        return {
+
+                                            ...task,
+
+                                            area:
+                                                area.name
+
+                                        };
+
+                                    }
+
+                                    return task;
+
+                                }
+                            );
+
+                    }
+
+                }
+
+                else {
+
+                    data.areas.push(
+                        area
+                    );
+
+                }
+
+
+                saveData();
+
+                closeModal();
+
+                renderAreas();
+
+                renderDashboard();
+
+                showToast(
+                    "Área salva com sucesso."
+                );
+
+            }
+
+
+            /* ================================================
+               TAREFA
+               ================================================ */
+
+            if (
+                modalType ===
+                "task"
+            ) {
+
+                const task = {
+
+                    id:
+                        editingId ||
+                        nextId(
+                            data.tasks
+                        ),
+
+                    title:
+                        document
+                            .getElementById(
+                                "taskTitle"
+                            )
+                            .value
+                            .trim(),
+
+                    responsible:
+                        document
+                            .getElementById(
+                                "taskResponsible"
+                            )
+                            .value,
+
+                    area:
+                        document
+                            .getElementById(
+                                "taskArea"
+                            )
+                            .value,
+
+                    date:
+                        document
+                            .getElementById(
+                                "taskDate"
+                            )
+                            .value,
+
+                    status:
+                        document
+                            .getElementById(
+                                "taskStatus"
+                            )
+                            .value
+
+                };
+
+
+                if (!task.title) {
+
+                    alert(
+                        "Digite o nome da tarefa."
+                    );
+
+                    return;
+
+                }
+
+
+                if (editingId) {
+
+                    const index =
+                        data.tasks.findIndex(
+                            item =>
+                                item.id ===
+                                editingId
+                        );
+
+
+                    data.tasks[index] =
+                        task;
+
+                }
+
+                else {
+
+                    data.tasks.push(
+                        task
+                    );
+
+                }
+
+
+                saveData();
+
+                closeModal();
+
+                renderTasks();
+
+                renderDashboard();
+
+                showToast(
+                    "Tarefa salva com sucesso."
+                );
+
+            }
+
+
+            /* ================================================
+               SERVIÇO
+               ================================================ */
+
+            if (
+                modalType ===
+                "service"
+            ) {
+
+                const service = {
+
+                    id:
+                        editingId ||
+                        nextId(
+                            data.services
+                        ),
+
+                    name:
+                        document
+                            .getElementById(
+                                "serviceName"
+                            )
+                            .value
+                            .trim(),
+
+                    area:
+                        document
+                            .getElementById(
+                                "serviceArea"
+                            )
+                            .value,
+
+                    responsible:
+                        document
+                            .getElementById(
+                                "serviceResponsible"
+                            )
+                            .value,
+
+                    date:
+                        document
+                            .getElementById(
+                                "serviceDate"
+                            )
+                            .value,
+
+                    status:
+                        document
+                            .getElementById(
+                                "serviceStatus"
+                            )
+                            .value
+
+                };
+
+
+                if (!service.name) {
+
+                    alert(
+                        "Digite o nome do serviço."
+                    );
+
+                    return;
+
+                }
+
+
+                if (editingId) {
+
+                    const index =
+                        data.services.findIndex(
+                            item =>
+                                item.id ===
+                                editingId
+                        );
+
+
+                    data.services[index] =
+                        service;
+
+                }
+
+                else {
+
+                    data.services.push(
+                        service
+                    );
+
+                }
+
+
+                saveData();
+
+                closeModal();
+
+                renderServices();
+
+                showToast(
+                    "Serviço salvo."
+                );
+
+            }
+
+
+            /* ================================================
+               MANUTENÇÃO
+               ================================================ */
+
+            if (
+                modalType ===
+                "maintenance"
+            ) {
+
+                const item = {
+
+                    id:
+                        editingId ||
+                        nextId(
+                            data.maintenance
+                        ),
+
+                    name:
+                        document
+                            .getElementById(
+                                "maintenanceName"
+                            )
+                            .value
+                            .trim(),
+
+                    category:
+                        document
+                            .getElementById(
+                                "maintenanceCategory"
+                            )
+                            .value
+                            .trim(),
+
+                    status:
+                        document
+                            .getElementById(
+                                "maintenanceStatus"
+                            )
+                            .value,
+
+                    last:
+                        document
+                            .getElementById(
+                                "maintenanceLast"
+                            )
+                            .value,
+
+                    next:
+                        document
+                            .getElementById(
+                                "maintenanceNext"
+                            )
+                            .value
+
+                };
+
+
+                if (!item.name) {
+
+                    alert(
+                        "Digite o nome do equipamento."
+                    );
+
+                    return;
+
+                }
+
+
+                if (editingId) {
+
+                    const index =
+                        data.maintenance.findIndex(
+                            equipment =>
+                                equipment.id ===
+                                editingId
+                        );
+
+
+                    data.maintenance[index] =
+                        item;
+
+                }
+
+                else {
+
+                    data.maintenance.push(
+                        item
+                    );
+
+                }
+
+
+                saveData();
+
+                closeModal();
+
+                renderMaintenance();
+
+                showToast(
+                    "Equipamento salvo."
+                );
+
+            }
+
+        }
+    );
+
+
+/* =============================================================
+   INICIALIZAÇÃO
+   ============================================================= */
+
+updateHeader();
+
+updateGreeting();
+
+renderDashboard();
+
+</script>
+
+</body>
+</html>
